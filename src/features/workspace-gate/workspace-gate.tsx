@@ -10,6 +10,9 @@
  *   3. If present → queryPermission; if granted, set the active root and
  *      render the children. If revoked, show a Reconnect splash.
  *
+ * Tabs opened from a u9itus handoff skip all of that and use a private
+ * browser-storage (OPFS) workspace instead (features/u9itus).
+ *
  * The landing page (`/`) is not a storage-dependent route — it renders
  * without waiting for the gate, so users see no splash flash on first
  * visit. Navigating into a protected route after the handle is initialized
@@ -34,6 +37,7 @@ import { onPermissionLost, setWorkspaceRoot } from '@/infrastructure/storage/wor
 import { createLogger } from '@/shared/logging/logger'
 import { WorkspaceGateSplash } from './workspace-gate-splash'
 import { usePathname } from './use-pathname'
+import { getU9itusWorkspace, isU9itusSession } from './deps/u9itus-contract'
 
 /**
  * Routes that read/write the workspace and therefore need the gate to be
@@ -84,6 +88,19 @@ export function WorkspaceGate({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     let cancelled = false
     ;(async () => {
+      // Opened from u9itus (Citizen Reporter): work in the browser's private
+      // storage, so reporters never pick a folder and other browsers work too.
+      if (isU9itusSession()) {
+        if (isLikelyMobileBrowser()) {
+          if (!cancelled) setStatus({ kind: 'unavailable', reason: 'mobile' })
+          return
+        }
+        const handle = await getU9itusWorkspace()
+        if (handle) {
+          if (!cancelled) await activate(handle)
+          return
+        }
+      }
       if (!isFileSystemAccessSupported()) {
         if (!cancelled) setStatus({ kind: 'unavailable', reason: 'browser' })
         return

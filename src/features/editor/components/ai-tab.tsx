@@ -7,17 +7,20 @@ import { AiPanel } from './ai-panel'
 import { DirectorChatPanel } from '../director'
 import { FlowPanel } from '../flow'
 import { SeedancePanel } from '../seedance'
+import { isU9itusSession } from '../deps/u9itus-contract'
 
 type AiTabMode = 'generate' | 'pixels' | 'flow' | 'director'
 
 /**
  * AI sidebar: local Generate (TTS/music), paid Flow (start/end → video),
- * and paid Creative Director.
+ * and paid Creative Director. Tabs opened from a u9itus Citizen Reporter
+ * handoff don't offer the Director.
  */
 export const AiTab = memo(function AiTab() {
   const { t } = useTranslation()
   const seedanceEnabled = isSeedanceGenerateEnabled()
   const [mode, setMode] = useState<AiTabMode>('generate')
+  const directorEnabled = !isU9itusSession()
 
   return (
     <div className="flex h-full min-h-0 flex-col">
@@ -63,19 +66,21 @@ export const AiTab = memo(function AiTab() {
           <Layers className="h-3 w-3 opacity-80" strokeWidth={1.75} />
           {t('director.tab.flow', { defaultValue: 'Flow' })}
         </button>
-        <button
-          type="button"
-          onClick={() => setMode('director')}
-          className={cn(
-            'flex flex-1 items-center justify-center gap-1 rounded-md px-1.5 py-1.5 text-[10px] font-medium transition-colors sm:gap-1.5 sm:text-[11px]',
-            mode === 'director'
-              ? 'bg-primary/15 text-primary ring-1 ring-primary/35'
-              : 'text-muted-foreground hover:bg-secondary/40 hover:text-foreground',
-          )}
-        >
-          <Clapperboard className="h-3 w-3 opacity-80" strokeWidth={1.75} />
-          {t('director.tab.director', { defaultValue: 'Director' })}
-        </button>
+        {directorEnabled && (
+          <button
+            type="button"
+            onClick={() => setMode('director')}
+            className={cn(
+              'flex flex-1 items-center justify-center gap-1 rounded-md px-1.5 py-1.5 text-[10px] font-medium transition-colors sm:gap-1.5 sm:text-[11px]',
+              mode === 'director'
+                ? 'bg-primary/15 text-primary ring-1 ring-primary/35'
+                : 'text-muted-foreground hover:bg-secondary/40 hover:text-foreground',
+            )}
+          >
+            <Clapperboard className="h-3 w-3 opacity-80" strokeWidth={1.75} />
+            {t('director.tab.director', { defaultValue: 'Director' })}
+          </button>
+        )}
       </div>
       <div className="min-h-0 flex-1 overflow-hidden">
         {mode === 'generate' ? (
@@ -84,8 +89,10 @@ export const AiTab = memo(function AiTab() {
           <SeedancePanel />
         ) : mode === 'flow' ? (
           <FlowPanel />
-        ) : (
+        ) : directorEnabled ? (
           <DirectorChatPanel />
+        ) : (
+          <AiPanel />
         )}
       </div>
     </div>
