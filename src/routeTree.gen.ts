@@ -14,6 +14,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProjectsIndexRouteImport } from './routes/projects/index'
 import { Route as DocsIndexRouteImport } from './routes/docs/index'
 import { Route as ProjectsNewRouteImport } from './routes/projects/new'
+import { Route as ProjectsImportRouteImport } from './routes/projects/import'
 import { Route as ProjectsProjectIdRouteImport } from './routes/projects/$projectId'
 import { Route as EditorProjectIdRouteImport } from './routes/editor/$projectId'
 import { Route as DocsSlugRouteImport } from './routes/docs/$slug'
@@ -43,6 +44,11 @@ const ProjectsNewRoute = ProjectsNewRouteImport.update({
   path: '/projects/new',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProjectsImportRoute = ProjectsImportRouteImport.update({
+  id: '/projects/import',
+  path: '/projects/import',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProjectsProjectIdRoute = ProjectsProjectIdRouteImport.update({
   id: '/projects/$projectId',
   path: '/projects/$projectId',
@@ -67,6 +73,7 @@ export interface FileRoutesByFullPath {
   '/docs/$slug': typeof DocsSlugRoute
   '/editor/$projectId': typeof EditorProjectIdRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
+  '/projects/import': typeof ProjectsImportRoute
   '/projects/new': typeof ProjectsNewRoute
   '/docs/': typeof DocsIndexRoute
   '/projects/': typeof ProjectsIndexRoute
@@ -77,6 +84,7 @@ export interface FileRoutesByTo {
   '/docs/$slug': typeof DocsSlugRoute
   '/editor/$projectId': typeof EditorProjectIdRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
+  '/projects/import': typeof ProjectsImportRoute
   '/projects/new': typeof ProjectsNewRoute
   '/docs': typeof DocsIndexRoute
   '/projects': typeof ProjectsIndexRoute
@@ -88,6 +96,7 @@ export interface FileRoutesById {
   '/docs/$slug': typeof DocsSlugRoute
   '/editor/$projectId': typeof EditorProjectIdRoute
   '/projects/$projectId': typeof ProjectsProjectIdRoute
+  '/projects/import': typeof ProjectsImportRoute
   '/projects/new': typeof ProjectsNewRoute
   '/docs/': typeof DocsIndexRoute
   '/projects/': typeof ProjectsIndexRoute
@@ -100,6 +109,7 @@ export interface FileRouteTypes {
     | '/docs/$slug'
     | '/editor/$projectId'
     | '/projects/$projectId'
+    | '/projects/import'
     | '/projects/new'
     | '/docs/'
     | '/projects/'
@@ -110,6 +120,7 @@ export interface FileRouteTypes {
     | '/docs/$slug'
     | '/editor/$projectId'
     | '/projects/$projectId'
+    | '/projects/import'
     | '/projects/new'
     | '/docs'
     | '/projects'
@@ -120,6 +131,7 @@ export interface FileRouteTypes {
     | '/docs/$slug'
     | '/editor/$projectId'
     | '/projects/$projectId'
+    | '/projects/import'
     | '/projects/new'
     | '/docs/'
     | '/projects/'
@@ -131,6 +143,7 @@ export interface RootRouteChildren {
   DocsSlugRoute: typeof DocsSlugRoute
   EditorProjectIdRoute: typeof EditorProjectIdRoute
   ProjectsProjectIdRoute: typeof ProjectsProjectIdRoute
+  ProjectsImportRoute: typeof ProjectsImportRoute
   ProjectsNewRoute: typeof ProjectsNewRoute
   DocsIndexRoute: typeof DocsIndexRoute
   ProjectsIndexRoute: typeof ProjectsIndexRoute
@@ -173,6 +186,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProjectsNewRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/projects/import': {
+      id: '/projects/import'
+      path: '/projects/import'
+      fullPath: '/projects/import'
+      preLoaderRoute: typeof ProjectsImportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/projects/$projectId': {
       id: '/projects/$projectId'
       path: '/projects/$projectId'
@@ -203,6 +223,7 @@ const rootRouteChildren: RootRouteChildren = {
   DocsSlugRoute: DocsSlugRoute,
   EditorProjectIdRoute: EditorProjectIdRoute,
   ProjectsProjectIdRoute: ProjectsProjectIdRoute,
+  ProjectsImportRoute: ProjectsImportRoute,
   ProjectsNewRoute: ProjectsNewRoute,
   DocsIndexRoute: DocsIndexRoute,
   ProjectsIndexRoute: ProjectsIndexRoute,

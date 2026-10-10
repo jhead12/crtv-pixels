@@ -2,6 +2,8 @@
 
 interface ImportMetaEnv {
   readonly VITE_SHOW_DEBUG_PANEL?: string
+  /** Comma-separated u9itus origins allowed to hand off Citizen Reporter drafts. */
+  readonly VITE_U9ITUS_ORIGINS?: string
   readonly VITE_PRIVY_APP_ID?: string
   readonly VITE_PRIVY_CLIENT_ID?: string
   readonly VITE_ALCHEMY_API_KEY?: string

@@ -52,6 +52,8 @@ import type {
   SubtitleExportMode,
 } from '@/types/export'
 import { useClientRender } from '../hooks/use-client-render'
+import { useProjectStore } from '../deps/projects'
+import { SendToU9itusButton } from '../deps/u9itus-contract'
 import { useWalletContext } from '../deps/wallet'
 import { getC2paCertId } from '../utils/c2pa-cert'
 import {
@@ -571,6 +573,7 @@ export function ExportDialog({ open, onClose, onOpenRenderQueue }: ExportDialogP
 
   // Render hook
   const clientRender = useClientRender()
+  const currentProjectId = useProjectStore((s) => s.currentProject?.id)
 
   const {
     progress,
@@ -1679,6 +1682,7 @@ export function ExportDialog({ open, onClose, onOpenRenderQueue }: ExportDialogP
                 <Download className="mr-2 h-4 w-4" />
                 {t('export.complete.download')}
               </Button>
+              <SendToU9itusButton projectId={currentProjectId} result={clientRender.result} />
             </div>
           </div>
         )}
